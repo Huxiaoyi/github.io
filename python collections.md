@@ -1,6 +1,6 @@
 时间：2019-05
 
-作者：胡家义
+作者：
 
 # Python高性能容器数据类型collections
 Python标准库中的collections模块，是在Python内置数据类型基础上，进行封装提供的几个高效、方便的额外的数据类型：
