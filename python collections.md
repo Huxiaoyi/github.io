@@ -90,7 +90,7 @@ def namedtuple(typename, field_names, *, verbose=False, rename=False, module=Non
     """
 ```
 ## deque双端队列(double-ended queue缩写)
-Python最常用的数据结构list，也就是C语言中的列表，按索引访问元素很快，但是插入和删除元素很慢；相比原生list，deque除了实现list的append、pop外，它最大优势是可以快速地从队列头插入(appendleft)和删除对象(popleft)，时间复杂度均为O(1)，而list(insert(0, v)、pop(0))则是O(n)。 此外，deque是线程安全的，可以同时从deque集合的左边和右边进行操作而不会有影响，常见用法参见多益云项目写日志模块。
+Python最常用的数据结构list，也就是C语言中的列表，按索引访问元素很快，但是插入和删除元素很慢；相比原生list，deque除了实现list的append、pop外，它最大优势是可以快速地从队列头插入(appendleft)和删除对象(popleft)，时间复杂度均为O(1)，而list(insert(0, v)、pop(0))则是O(n)。 此外，deque是线程安全的，可以同时从deque集合的左边和右边进行操作而不会有影响，常见用法参见项目写日志模块。
 
 ## OrderedDict有序字典
 Python原生字段由于hash特性，是无序的，OrderedDict继承自dict，将字典每个元素处理为链表的节点元素，从而保证字典元素的有序性。
