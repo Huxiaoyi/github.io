@@ -3,10 +3,14 @@
 ## 事务：
 MyIASM不支持事务，InnoDB支持事务；
 ## 锁粒度：
-MyIASM锁的粒度是表级的，InnoDB支持行级锁，一般情况下写操作不锁定全表，在并发较高时，使用Innodb引擎会提升效率；
+MyIASM锁的粒度是表级的，批量插入时，效率高于InnoDB；InnoDB支持行级锁，一般情况下写操作不锁定全表，在并发较高时，使用Innodb引擎会提升效率；
+
+## 外键：
+MyISAM不支持外键，InnoDB支持外键
 
 ## 索引：
-MyISAM和InnoDB都使用B+树来实现索引
+MyISAM和InnoDB都使用B+树来实现索引； MyISAM支持全文索引，InnoDB不支持
+
 ### MyISAM的索引：
 ①. MyISAM的索引与数据分开存储的(即有连续聚集的区域单独存储行记录)，叫做非聚集索引; 
 <br/>②. MyISAM的索引的叶子存储记录行指针; 所以其主键索引与普通索引没有本质差异：
