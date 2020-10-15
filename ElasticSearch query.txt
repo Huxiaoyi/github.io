@@ -1,0 +1,739 @@
+录波查询
+查询某个监测点录波
+GET /poweriot_point_1min_scope/_search
+{
+  "size": 2,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "term": {
+            "point_id": 64
+          }
+        }
+        
+      ]
+    }
+  }
+}
+根据ES_id查询滤波
+GET /poweriot_point_1min_scope/_search
+{
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "term": {
+            "_id": "A1904000083_1589869391"
+          }
+        }
+      ]
+    }
+  }
+}
+point_1min_event根据point_id查询
+GET /poweriot_point_1min_event/_search?
+{
+  "size": 2,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "point_id": 60
+          }
+        }
+      ]
+    }
+  }
+}
+point_1min_event根据_id查询
+GET /poweriot_point_1min_event/_search?size=1
+{
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "term": {
+            "_id": "133_overTempRange1min__1595199996"
+          }
+        }
+      ]
+    }
+  }
+}
+location查询
+根据location_id和time范围，查询location_1min_aiao
+GET /poweriot_location_1min_aiao/_search
+{
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "term": {
+            "location_id": 239
+          }
+        },
+        {
+          "range": {
+            "time": {
+              "gte": 1593964800,
+              "lte": 1599051200
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+根据location_id和time范围，查询location_15min_aiao
+GET /poweriot_location_15min_aiao/_search
+{
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "term": {
+            "location_id": 133
+          }
+        },
+        {
+          "range": {
+            "time": {
+              "gte": "2020-07-20T00:00:00+08:00",
+              "lte": "2020-07-21T00:00:00+08:00"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+GET /poweriot_location_1min_aiao/_search?
+{
+    "size": 1,
+    "query":{
+        "bool":{
+            "must":[
+                {"term":{"location_id":224}}
+                
+            ]
+        }
+    },
+    "aggs": {
+        "min": {"min": {"field": "value"}},
+        "max": {"max": {"field": "value"}},
+        "avg": {"avg": {"field": "value"}}
+    }
+}
+
+GET /poweriot_location_1min_aiao/_search?size=2
+{
+    "query":{
+        "bool":{
+            "must":[
+                {"term":{"location_id":224}}
+            ]
+        }
+    },
+    
+    "aggs": {
+        "quarter_aggs": {
+          "date_histogram": {
+            "field": "time",
+            "interval": "quarter"
+          }
+          
+        }
+    }
+}
+
+
+
+query_body {
+
+	'size': 20, 
+	'from': 0, 
+	'query': 
+	{	
+		'bool': 
+		{
+			'must': 
+			[
+			{'term': {'cid': 56}}, 
+			{'term': {'mode': 'alarm'}}, 
+			{'terms': {'type.keyword': ['unbalanceU', 'overI', 'overTemp', 'overU']}}, 
+			{'terms': {'importance': [1, 2]}}, 
+			{
+				'bool': 
+				{
+				'should': [{'terms': {'point_id': [137, 138, 125, 131, 140]}}, {'terms': {'location_id': [199, 142, 183, 201, 156, 188]}}]
+				}
+			}
+			
+			]
+
+		}
+
+	}, 
+
+	'sort': [{'done': {'order': 'asc'}}, {'time': {'order': 'desc'}}]
+
+}
+
+GET /poweriot_location_1min_aiao/_search
+{
+  "aggs": {
+    "att_stats": {
+      "stats": {
+        "field": "value"
+      }
+    }
+  }
+}
+
+
+GET /poweriot_location_1min_aiao/_search
+{
+  "aggs": {
+    "zzh": {
+      "terms": {
+        "field": "cid",
+        "order": {
+          "_term": "asc"
+        }
+      }
+    }
+  }
+}
+
+
+GET /poweriot_location_1min_aiao/_search?size=1
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "location_id": 224
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "zzh": {
+      "histogram": {
+        "field": "time",
+        "interval": "900"
+      },
+      
+      "aggs": {
+        "zzh2": {
+          "stats": {
+            "field": "value"
+          }
+        }
+      }
+    }
+  }
+}
+GET /poweriot_location_1min_aiao/_search?size=1
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "location_id": 224
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "poweriot_location_15min_aiao": {
+      "histogram": {
+        "field": "time",
+        "interval": "900"
+      },
+      
+      "aggs": {
+        "min": {"min": {"field": "value"}},
+        "max": {"max": {"field": "value"}},
+        "avg": {"avg": {"field": "value"}}
+      }
+    }
+  }
+}
+直方图分组统计查询：location一分钟聚合查询
+GET /poweriot_location_1min_aiao/_search?
+{
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "range": {
+            "time": {
+              "gte": 1591286400,
+              "lte": 1599372800
+            }
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "aggs_name": {
+      "histogram": {
+        "field": "time",
+        "interval": "3600"
+      },
+      "aggs": {
+        "statis": {
+          "stats": {
+            "field": "value"
+          }
+        }
+      }
+    }
+  }
+}
+GET /poweriot_location_1min_aiao/_search?
+{
+    "size": 2,
+    "query":{
+        "bool":{
+            "must":[
+                {"term":{"location_id":224}}
+                
+            ]
+        }
+    },
+    "aggs": {
+        "min": {"min": {"field": "value"}},
+        "max": {"max": {"field": "value"}},
+        "avg": {"avg": {"field": "value"}}
+    }
+}
+GET /poweriot_location_1min_aiao/_search?size=1
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "location_id": 224
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "poweriot_location_15min_aiao": {
+      "histogram": {
+        "field": "time",
+        "interval": "900"
+      },
+      
+      "aggs": {
+        "min": {"min": {"field": "value"}},
+        "max": {"max": {"field": "value"}},
+        "avg": {"avg": {"field": "value"}}
+      }
+    }
+  }
+}
+
+GET /poweriot_point_1min_index/_search?
+{
+  "size": 3,
+  "aggs": {
+    "aggs_name": {
+      "histogram": {
+        "field": "time",
+        "interval": "3600"
+      },
+      "aggs": {
+        "ua": {
+          "stats": {
+            "field": "ua"
+          }
+        },
+        "ub": {
+          "stats": {
+            "field": "ub"
+          }
+        },
+        "cosa": {
+          "stats": {
+            "field": "cosa"
+          }
+        }
+      }
+    }
+  }
+}
+GET /poweriot_point_1min_index/_search?
+{
+  "size": 3,
+  "aggs": {
+    "ua": {
+      "stats": {
+        "field": "ua"
+      }
+    },
+    "ub": {
+      "stats": {
+        "field": "ub"
+      }
+    },
+    "cosa": {
+      "stats": {
+        "field": "cosa"
+      }
+    }
+  }
+}
+
+温度趋势查询：查询某个location所有时间温度趋势数据
+GET /poweriot_location_temp_trend/_search
+{
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "term": {
+            "location_id": 12
+          }
+        }
+      ]
+    }
+  }
+}
+温度趋势查询：查询某个location某个时间段温度趋势数据
+GET /poweriot_location_temp_trend/_search
+{
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "term": {
+            "location_id": 133
+          }
+        },
+        {
+          "range": {
+            "quarter": {
+              "gte": "2020-07-20T00:00:00+08:00",
+              "lte": "2020-07-21T00:00:00+08:00"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+GET /poweriot_point_1min_index/_search?
+{
+  "size": 1,
+  "aggs": {
+    "ua_avg": {
+      "avg": {
+        "field": "ua"
+      }
+    },
+    "ua_max": {
+      "top_hits": {
+        "sort": [
+          {
+            "ua": {
+              "order": "desc"
+            }
+          }
+        ],
+        "size": 1
+      }
+    },
+    "ua_min": {
+      "top_hits": {
+        "sort": [
+          {
+            "ua": {
+              "order": "asc"
+            }
+          }
+        ],
+        "size": 1
+      }
+    },
+    
+    "ub_avg": {
+      "avg": {
+        "field": "ub"
+      }
+    },
+    "ub_max": {
+      "top_hits": {
+        "sort": [
+          {
+            "ub": {
+              "order": "desc"
+            }
+          }
+        ],
+        "size": 1
+      }
+    },
+    "ub_min": {
+      "top_hits": {
+        "sort": [
+          {
+            "ub": {
+              "order": "asc"
+            }
+          }
+        ],
+        "size": 1
+      }
+    }
+  }
+}
+
+GET /poweriot_point_15min_power/_search?
+{
+  "size": 2,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "term": {
+            "pid": 63
+          }
+        },
+        {
+          "range": {
+            "quarter_time": {
+              "gte": "2020-07-25T00:00:00+08:00",
+              "lte": "2020-07-25T23:59:59+08:00"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "spfvs": {
+      "date_histogram": {
+        "field": "quarter_time",
+        "interval": "hour"
+      },
+      "aggs": {
+        "kwh": {
+          "stats": {
+            "field": "kwh"
+          }
+        },
+        "p": {
+          "stats": {
+            "field": "p"
+          }
+        },
+        "charge": {
+          "stats": {
+            "field": "charge"
+          }
+        }
+      }
+    }
+  },
+  "sort": [
+    {
+      "quarter_time": {
+        "order": "asc"
+      }
+    }
+  ]
+}
+
+GET /_cat/indices
+GET /test_hhh/_mapping
+
+GET /poweriot_point_15min_power/_search
+{
+  "size": 10,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "pid": {
+              "query": 73
+            }
+          }
+        },
+        {
+          "range": {
+            "quarter_time": {
+              "gte": "2020-09-15T17:00:00+08:00",
+              "lte": "2020-09-15T18:00:00+08:00"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "kwh": {
+      "sum": {
+        "field": "kwh"
+      }
+    },
+    "p": {
+      "avg": {
+        "field": "p"
+      }
+    },
+    "charge": {
+      "sum": {
+        "field": "charge"
+      }
+    }
+  }
+}
+GET /poweriot_point_15min_power/_search
+{
+  "size": 10,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "pid": {
+              "query": 73
+            }
+          }
+        },
+        {
+          "range": {
+            "quarter_time": {
+              "gte": "2020-09-15T17:00:00+08:00",
+              "lte": "2020-09-15T18:59:59+08:00"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "aggregations": {
+    "spfv": {
+      "aggregations": {
+        "charge": {
+          "sum": {
+            "field": "charge"
+          }
+        },
+        "kwh": {
+          "sum": {
+            "field": "kwh"
+          }
+        }
+      },
+      "terms": {
+        "field": "spfv.keyword",
+        "size": 4
+      }
+    }
+  }
+}
+
+
+GET /poweriot_point_15min_power/_search
+{
+  "size": 1,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "pid": {
+              "query": 53
+            }
+          }
+        },
+        {
+          "range": {
+            "quarter_time": {
+              "gte": "2020-09-23T16:00:00+08:00",
+              "lt": "2020-09-23T17:00:00+08:00"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "aggregations": {
+    "spfv": {
+      "aggregations": {
+        "charge": {
+          "sum": {
+            "field": "charge"
+          }
+        },
+        "kwh": {
+          "sum": {
+            "field": "kwh"
+          }
+        }
+      },
+      "terms": {
+        "field": "spfv.keyword",
+        "size": 4
+      }
+    }
+  }
+}
+
+POST poweriot_point_1min_event/doc/_delete_by_query
+{
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "term": {
+            "point_id": 216
+          }
+        }
+      ]
+    }
+  }
+}
+
+POST poweriot_point_1min_event/_delete_by_query
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "cid": {
+              "value": 76
+            }
+          }
+        },
+        {
+          "bool": {
+            "must_not": [
+              {
+                "exists": {
+                  "field": "name"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
