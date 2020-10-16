@@ -737,3 +737,52 @@ POST poweriot_point_1min_event/_delete_by_query
     }
   }
 }
+
+
+GET poweriot_point_15min_index/_search
+{
+  "size": 1, 
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "pid": {
+              "value": 180
+            }
+          }
+        },
+        {
+          "range": {
+             "quarter_time": {
+              "gte": "2020-07-01T00:00:00+08:00",
+              "lt": "2020-08-01T00:00:00+08:00"
+            }
+          }
+        }
+      ]
+    }
+  },
+  
+  "aggs": {
+    "mdkwh_max": {
+      "top_hits": {
+        "size": 10,
+        "sort": [
+          {
+            "mdkwh_max": {
+              "order": "desc"
+            }
+          }
+          ]
+      }
+    }
+  },
+  "sort": [
+    {
+      "quarter_time": {
+        "order": "asc"
+      }
+    }
+  ]
+}
