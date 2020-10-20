@@ -1,0 +1,27 @@
+一. 按时间分组，查询最小值、最大值、平均值、sum
+1.按天聚合
+SELECT DATE(datetime) AS aggs_date, max(value) AS max_value, min(value) AS min_value, avg(value) AS avg_value 
+FROM es_test.poweriot_location_1min_aiao 
+WHERE location_id=264 
+AND datetime BETWEEN "2020-09-01 00:00:00" AND "2020-10-01 00:00:00" 
+GROUP BY aggs_date ORDER BY aggs_date;
+
+2.按小时聚合：
+SELECT date_format(datetime, '%Y-%m-%d %H:00:00') as aggs_date, max(value) AS max_value, min(value) AS min_value, avg(value) AS avg_value 
+FROM es_test.poweriot_location_1min_aiao 
+WHERE location_id=264 AND datetime BETWEEN "2020-09-01 00:00:00" AND "2020-10-01 00:00:00" 
+GROUP BY aggs_date ORDER BY aggs_date;
+
+3.按分钟聚合：SELECT date_format(datetime, '%Y-%m-%d %H:%i:00') as aggs_date 
+3.按15min聚合：
+SELECT aggs_date, max(value) AS max_value, min(value) AS min_value, avg(value) AS avg_value
+FROM (SELECT *, date_format(concat(DATE( datetime ), ' ', HOUR ( datetime ), ':', floor( MINUTE (datetime ) / 15 ) * 15 ), '%Y-%m-%d %H:%i:00') AS aggs_date FROM es_test.poweriot_location_1min_aiao) AS tmp 
+WHERE location_id=264 AND datetime BETWEEN "2020-09-01 00:00:00" AND "2020-10-01 00:00:00" 
+GROUP BY aggs_date ORDER BY aggs_date;
+
+4.按月聚合
+SELECT date_format(datetime, '%Y-%m') AS aggs_data, max(value) AS max_value, min(value) AS min_value, avg(value) AS avg_value, sum(value) AS sum_value 
+FROM es_test.poweriot_location_1min_aiao 
+WHERE location_id=264 AND datetime BETWEEN "2020-09-01 00:00:00" AND "2020-10-01 00:00:00" 
+GROUP BY aggs_data ORDER BY aggs_data;
+
