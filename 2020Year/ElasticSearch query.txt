@@ -1,91 +1,3 @@
-录波查询
-查询某个监测点录波
-GET /poweriot_point_1min_scope/_search
-{
-  "size": 2,
-  "query": {
-    "bool": {
-      "filter": [
-        {
-          "term": {
-            "point_id": 64
-          }
-        }
-        
-      ]
-    }
-  }
-}
-根据ES_id查询滤波
-GET /poweriot_point_1min_scope/_search
-{
-  "query": {
-    "bool": {
-      "filter": [
-        {
-          "term": {
-            "_id": "A1904000083_1589869391"
-          }
-        }
-      ]
-    }
-  }
-}
-point_1min_event根据point_id查询
-GET /poweriot_point_1min_event/_search?
-{
-  "size": 2,
-  "query": {
-    "bool": {
-      "must": [
-        {
-          "term": {
-            "point_id": 60
-          }
-        }
-      ]
-    }
-  }
-}
-point_1min_event根据_id查询
-GET /poweriot_point_1min_event/_search?size=1
-{
-  "query": {
-    "bool": {
-      "filter": [
-        {
-          "term": {
-            "_id": "133_overTempRange1min__1595199996"
-          }
-        }
-      ]
-    }
-  }
-}
-location查询
-根据location_id和time范围，查询location_1min_aiao
-GET /poweriot_location_1min_aiao/_search
-{
-  "query": {
-    "bool": {
-      "filter": [
-        {
-          "term": {
-            "location_id": 239
-          }
-        },
-        {
-          "range": {
-            "time": {
-              "gte": 1593964800,
-              "lte": 1599051200
-            }
-          }
-        }
-      ]
-    }
-  }
-}
 根据location_id和time范围，查询location_15min_aiao
 GET /poweriot_location_15min_aiao/_search
 {
@@ -108,23 +20,6 @@ GET /poweriot_location_15min_aiao/_search
       ]
     }
   }
-}
-GET /poweriot_location_1min_aiao/_search?
-{
-    "size": 1,
-    "query":{
-        "bool":{
-            "must":[
-                {"term":{"location_id":224}}
-                
-            ]
-        }
-    },
-    "aggs": {
-        "min": {"min": {"field": "value"}},
-        "max": {"max": {"field": "value"}},
-        "avg": {"avg": {"field": "value"}}
-    }
 }
 
 GET /poweriot_location_1min_aiao/_search?size=2
@@ -181,16 +76,7 @@ query_body {
 
 }
 
-GET /poweriot_location_1min_aiao/_search
-{
-  "aggs": {
-    "att_stats": {
-      "stats": {
-        "field": "value"
-      }
-    }
-  }
-}
+
 
 
 GET /poweriot_location_1min_aiao/_search
@@ -207,15 +93,25 @@ GET /poweriot_location_1min_aiao/_search
   }
 }
 
-
-GET /poweriot_location_1min_aiao/_search?size=1
+GET /poweriot_location_1min_aiao/_search?
 {
+  "size": 1,
   "query": {
     "bool": {
       "must": [
         {
           "term": {
-            "location_id": 224
+            "location_id": {
+              "value": 264
+            }
+          }
+        },
+        {
+          "range": {
+            "datetime": {
+              "gte": "2020-09-01T00:00:00+08:00",
+              "lt": "2020-10-01T00:00:00+08:00"
+            }
           }
         }
       ]
@@ -223,11 +119,11 @@ GET /poweriot_location_1min_aiao/_search?size=1
   },
   "aggs": {
     "zzh": {
-      "histogram": {
-        "field": "time",
-        "interval": "900"
+      "date_histogram": {
+        "field": "datetime",
+        "interval": "15m",
+        "time_zone": "+08:00"
       },
-      
       "aggs": {
         "zzh2": {
           "stats": {
@@ -396,44 +292,6 @@ GET /poweriot_point_1min_index/_search?
   }
 }
 
-温度趋势查询：查询某个location所有时间温度趋势数据
-GET /poweriot_location_temp_trend/_search
-{
-  "query": {
-    "bool": {
-      "filter": [
-        {
-          "term": {
-            "location_id": 12
-          }
-        }
-      ]
-    }
-  }
-}
-温度趋势查询：查询某个location某个时间段温度趋势数据
-GET /poweriot_location_temp_trend/_search
-{
-  "query": {
-    "bool": {
-      "filter": [
-        {
-          "term": {
-            "location_id": 133
-          }
-        },
-        {
-          "range": {
-            "quarter": {
-              "gte": "2020-07-20T00:00:00+08:00",
-              "lte": "2020-07-21T00:00:00+08:00"
-            }
-          }
-        }
-      ]
-    }
-  }
-}
 
 GET /poweriot_point_1min_index/_search?
 {

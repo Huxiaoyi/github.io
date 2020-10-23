@@ -25,3 +25,8 @@ FROM es_test.poweriot_location_1min_aiao
 WHERE location_id=264 AND datetime BETWEEN "2020-09-01 00:00:00" AND "2020-10-01 00:00:00" 
 GROUP BY aggs_data ORDER BY aggs_data;
 
+5. 按location_id分组，查询最小值、最大值、平均值、sum
+SELECT location_id, max(value) AS max_value, min(value) AS min_value, avg(value) AS avg_value, sum(value) AS sum_value
+FROM es_test.poweriot_location_1min_aiao 
+WHERE datetime BETWEEN "2020-09-01 00:00:00" AND "2020-10-01 00:00:00" 
+GROUP BY location_id;

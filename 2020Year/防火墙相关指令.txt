@@ -1,0 +1,50 @@
+防火墙相关指令
+Ubuntu：
+1.防火墙的打开（如果没有，先安装：sudo apt install ufw）
+sudo ufw enable
+
+2.防火墙的重启
+sudo ufw reload
+
+3.打开想要的端口（以9000为例）
+sudo ufw allow 9000
+
+4.查看本机端口使用情况
+sudo ufw status (verbose)
+
+5.关闭防火墙
+sudo ufw disable
+
+Centos7:
+1.查看开放端口
+firewall-cmd --list-ports
+
+2.开启端口
+firewall-cmd --zone=public --add-port=80/tcp --permanent
+
+3.开启范围端口 8080 - 9090范围的端口
+firewall-cmd  --zone=public  --add-port=8080-9090/tcp --permanent
+
+
+firewall-cmd --reload                  #重启firewall
+firewall-cmd  --state                  #查看防火墙状态
+systemctl start firewalld.service      #开启firewall
+systemctl stop firewalld.service       #停止firewall
+systemctl disable firewalld.service    #禁止firewall开机启动
+
+Centos6
+#查看开放端口
+service iptables status
+
+#开启8080端口 
+/sbin/iptables -I INPUT -p tcp --dport 8080 -j ACCEPT
+
+#开启命令: 
+service iptables start
+
+#关闭命令: 
+service iptables stop 
+
+#永久关闭防火墙：
+chkconfig iptables off
+
