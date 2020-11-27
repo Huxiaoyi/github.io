@@ -644,3 +644,43 @@ GET poweriot_point_15min_index/_search
     }
   ]
 }
+
+
+GET /poweriot_point_1min_event/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "wildcard": {
+            "message.keyword": {
+              "value": "*最低达到-0.*"
+            }
+          }
+        },
+        {
+          "wildcard": {
+            "message.keyword": {
+              "value": "*功率因数持续*"
+            }
+          }
+        },
+        {
+          "terms": {
+            "type.keyword": [
+              "underPhasePF",
+              "underTotalPF"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
+
+POST /poweriot_point_1min_event/_doc/283_overTemp__1599548641/_update?pretty
+{
+  "doc": {
+    "name": "东北角二级箱1#开关_N线"
+  }
+}
