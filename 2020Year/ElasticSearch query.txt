@@ -568,7 +568,7 @@ POST poweriot_point_1min_event/doc/_delete_by_query
   }
 }
 
-POST poweriot_point_1min_event/_delete_by_query
+w
 {
   "query": {
     "bool": {
@@ -684,3 +684,77 @@ POST /poweriot_point_1min_event/_doc/283_overTemp__1599548641/_update?pretty
     "name": "东北角二级箱1#开关_N线"
   }
 }
+
+POST /poweriot_point_15min_index_v2/doc/676-20201120_1530/_update?pretty
+{
+  "doc": {
+    "mdkwh_max": 7540.1314
+  }
+}
+
+
+GET /_settings
+GET /_cat/allocation?v&pretty
+
+PUT _settings
+{
+  "index": {
+    "blocks": {
+      "read_only_allow_delete": "false"
+    }
+  }
+}
+
+GET /poweriot_point_15min_index/_search
+{
+  "size": 1, 
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "range": {
+            "quarter_time": {
+              "gte": "2020-10-01T08:00:00+08:00",
+              "lt": "2020-11-01T09:00:00+08:00",
+              "time_zone": "+08:00"
+            }
+          }
+        },
+        {
+          "terms": {
+            "pid": [
+              495,
+              496,
+              497
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "sort": [
+    {
+      "quarter_time": {
+        "order": "asc"
+      }
+    }
+  ], 
+  "aggs": {
+    "NAME": {
+      "date_histogram": {
+        "field": "quarter_time",
+        "interval": "15m"
+      }
+      , "aggs": {
+        "NAME": {
+          "stats": {
+            "field": "mdp_max"
+          }
+        }
+      }
+    }
+  }
+ 
+  
+}
+

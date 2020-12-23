@@ -1,0 +1,91 @@
+常用指令
+1. workon  查看虚拟环境：workon xxx 进入虚拟环境、pip list查看第三方库
+
+2.Linux查看服务安装目录：which samba
+
+3.查找文件（2>dev/null用来忽略没有权限的目录）
+[/] #$ find -name pycharm-community-2020.1.2.tar.gz 2>dev/null
+./tmp/mozilla_ubuntu0/pycharm-community-2020.1.2.tar.gz
+
+4. Linux添加环境变量:vi /etc/profile	export SANIC_SETTING=/home/ubuntu/data/code/unify_api/unify_api/settings.yaml
+
+ln -s /usr/local/python3/bin/python3.8 /usr/bin/python3
+ln -s /usr/local/python3/bin/pip3.8 /usr/bin/pip3
+
+path_env = "D:/projects/unify_api/unify_api/settings.yaml"
+
+openvpn启动：
+①.sudo openvpn --config /home/ubuntu/openvpn-client/rtr-test.ovpn --auth-user-pass /home/ubuntu/openvpn-client/pass.txt
+②.sudo openvpn --config /home/ubuntu/openvpn-client/rtr-test.ovpn --auth-user-pass /home/ubuntu/openvpn-client/pass.txt&
+
+source /usr/local/bin/virtualenvwrapper.sh
+
+# 从本地拷贝文件到远程
+scp 1398.tar.gz prod_cold_store:/home/ubuntu/data
+
+# 从远程拷贝文件夹到本地
+scp -r ubuntu@172.18.1.32:/home/ubuntu/richard/his_data/daily/1398/ /home/ubuntu/projects/data/
+scp -r ubuntu@172.18.1.9:/etc/supervisor/ /home/ubuntu/projects/data/
+
+# 解压文件至指定文件夹
+tar -zxvf 1398.tar.gz  -C /home/ubuntu/richard/his_data/daily/
+
+export POT_SYSTEM_CONFIG_PATH=/home/ubuntu/projects/power_iot/pot_utils/system_config/
+
+# Linux有两种方式：
+1. command & ： 后台运行，你关掉终端会停止运行
+2. nohup command & ： 后台运行，你关掉终端也会继续运行
+nohup python complete_point_data.py >/dev/null 2>&1 &
+nohup python complete_point_data.py 78
+nohup python complete_point_data.py 78 >/dev/null 2>&1 &
+
+nohup python re_create_es.py >/dev/null 2>&1 &
+
+nohup python cold_es_mgr.py >/dev/null 2>&1 &
+
+nohup python cold_es_adio_mgr.py >/dev/null 2>&1 &
+nohup python cold_es_electric_mgr.py >/dev/null 2>&1 &
+nohup python cold_es_soe_mgr.py >/dev/null 2>&1 &
+nohup python cold_es_scope_mgr.py >/dev/null 2>&1 &
+nohup python scope_get_all_config.py >/dev/null 2>&1 &
+
+nohup python complete_point_data.py 82-107  &
+
+vim nohup.out
+rm nohup.out
+
+power_iot 的potutils修改怎么checkout? 在power_iot diff potutils，找到版本号变化区间，再进入potutils，checkout到版本号变化的起始版本号
+
+eval `ssh-agent -s`
+ssh-add
+
+git reset --soft HEAD^
+
+git reset HEAD	丢掉所有修改(包括冲突)
+
+git spush origin master
+
+cold_store项目合并分支至主干操作步骤：①.在develop分支执行：git rebase develop master ②.查看log，分支有没有指向master ③. 将合并推到远程仓库：git spush
+
+
+git rebase --continue
+
+python fetch_qingstor.py A1911000284 soe   2020082809-2020082810
+python fetch_qingstor.py A1911000174 scope 2020091514-2020091516
+
+python event_sync.py 145 A2004000015,A2004000244,A2004000271
+
+
+GET /_cat/allocation?v&pretty
+
+创建好xxx.conf文件后，执行supervisorctl update，即自动会启动所有新增加的进程服务
+
+
+
+tiup cluster deploy zzh v4.0.6 ./topo.yaml --user root -p
+
+
+直接在kibana，根据doc id删除某个doc：DELETE poweriot_company_1hour_power/doc/108-20200928_15
+
+
+vim快捷键：shift+g,调至末尾

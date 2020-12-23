@@ -1,0 +1,35 @@
+一. 需量管理
+1. 修改 algorithm_md_space_analysis_result 表，新增 inline_tc_charge、inline_md_charge、inline_md_predict、save_charge、kpi_x 字段
+ALTER TABLE algorithm_md_space_analysis_result add column inline_tc_charge double DEFAULT NULL after related_inlines_res;
+ALTER TABLE algorithm_md_space_analysis_result add column inline_md_charge double DEFAULT NULL after related_inlines_res;
+ALTER TABLE algorithm_md_space_analysis_result add column inline_md_predict double DEFAULT NULL after related_inlines_res;
+
+ALTER TABLE algorithm_md_space_analysis_result add column save_charge  double DEFAULT NULL after his_savings;
+ALTER TABLE algorithm_md_space_analysis_result add column kpi_x  double DEFAULT NULL after his_savings;
+
+2. 重新跑9月数据
+3. 恢复脚本改动
+4. 刷过去一年进线的容量电费、需量电费
+nohup python cal_his_tc_md_charge.py >/dev/null 2>&1 &
+
+
+二、功率因数
+1. 修改 algorithm_power_factor_result 表，新增 save_charge、kpi_x 字段
+ALTER TABLE algorithm_power_factor_result add column save_charge double DEFAULT NULL after pf_cost;
+ALTER TABLE algorithm_power_factor_result add column kpi_x double DEFAULT NULL after pf_cost;
+
+2. 重新跑9月数据
+3. 恢复脚本改动
+
+
+三、移峰填谷
+1.直接跑计算历史脚本，重新跑历史数据，不改表，save_charge、kpi_x 字段 沿用之前的 score、save_cost 字段
+nohup python cal_his_peak_load_shift.py >/dev/null 2>&1 &
+
+
+四、经济运行
+1. 修改 algorithm_economic_operation_result 表， 新增 save_charge、kpi_x字段
+ALTER TABLE algorithm_economic_operation_result add column save_charge  double DEFAULT NULL after mean_load_factor;
+ALTER TABLE algorithm_economic_operation_result add column kpi_x  double DEFAULT NULL after mean_load_factor;
+
+2. 重新跑9月数据
