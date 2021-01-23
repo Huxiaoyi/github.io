@@ -18,6 +18,9 @@ openvpn启动：
 ①.sudo openvpn --config /home/ubuntu/openvpn-client/rtr-test.ovpn --auth-user-pass /home/ubuntu/openvpn-client/pass.txt
 ②.sudo openvpn --config /home/ubuntu/openvpn-client/rtr-test.ovpn --auth-user-pass /home/ubuntu/openvpn-client/pass.txt&
 
+①.sudo openvpn --config /home/ubuntu/openvpn_pro/pro_rtr.ovpn --auth-user-pass /home/ubuntu/openvpn_pro/pass.txt
+②.sudo openvpn --config /home/ubuntu/openvpn_pro/pro_rtr.ovpn --auth-user-pass /home/ubuntu/openvpn_pro/pass.txt&
+
 source /usr/local/bin/virtualenvwrapper.sh
 
 # 从本地拷贝文件到远程

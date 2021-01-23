@@ -753,8 +753,101 @@ GET /poweriot_point_15min_index/_search
         }
       }
     }
-  }
- 
-  
+  }  
 }
 
+GET /poweriot_point_1min_event/_search
+{
+  "size": 0, 
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "range": {
+            "datetime": {
+              "gte": "2020-11-01T06:00:00+08:00"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "NAME": {
+      "date_histogram": {
+        "field": "datetime",
+        "interval": "12h",
+        "time_zone": "+08:00",
+        "format": "yyyy-MM-dd HH:mm:ss",
+        "offset": "6h"
+      }
+    }
+  }
+}
+
+
+GET /poweriot_location_1min_aiao/_search
+{
+  "size": 0,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "location_id": {
+              "value": 219
+            }
+          }
+        },
+        {
+          "range": {
+            "datetime": {
+              "gte": "2020-09-01T00:00:00+08:00",
+              "lt": "2020-10-01T16:44:41+08:00"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "aiao": {
+      "date_histogram": {
+        "field": "datetime",
+        "interval": "15m",
+        "time_zone": "+08:00"
+      },
+      "aggs": {
+        "value_max": {
+          "top_hits": {
+            "sort": [
+              {
+                "value": {
+                  "order": "desc"
+                }
+              }
+            ],
+            "size": 1
+          }
+        },
+        "value_min": {
+          "top_hits": {
+            "sort": [
+              {
+                "value": {
+                  "order": "asc"
+                }
+              }
+            ],
+            "size": 1
+          }
+        },
+        "value_avg": {
+          "avg": {
+            "field": "value"
+          }
+        }
+      }
+    }
+  }
+}
