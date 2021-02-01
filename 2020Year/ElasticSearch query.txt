@@ -851,3 +851,286 @@ GET /poweriot_location_1min_aiao/_search
     }
   }
 }
+
+GET /poweriot_point_1min_index/_search
+{
+  "size": 0,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "point_id": {
+              "value": 123
+            }
+          }
+        },
+        {
+          "range": {
+            "datetime": {
+              "gte": "2020-09-01T00:00:00+08:00",
+              "lt": "2020-10-01T00:00:00+08:00"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "point_index": {
+      "date_histogram": {
+        "field": "datetime",
+        "interval": "15m",
+        "time_zone": "+08:00"
+      },
+      "aggs": {
+        "ua_dev_max": {
+          "top_hits": {
+            "sort": [
+              {
+                "ua_dev": {
+                  "order": "desc"
+                }
+              }
+            ],
+            "size": 1,
+            "_source": {
+              "includes": [
+                "datetime",
+                "ua_dev"
+              ]
+            }
+          }
+        },
+        "ua_dev_min": {
+          "top_hits": {
+            "sort": [
+              {
+                "ua_dev": {
+                  "order": "asc"
+                }
+              }
+            ],
+            "size": 1,
+            "_source": {
+              "includes": [
+                "datetime",
+                "ua_dev"
+              ]
+            }
+          }
+        },
+        "ua_dev_mean": {
+          "avg": {
+            "field": "ua_dev"
+          }
+        },
+        "ub_dev_max": {
+          "top_hits": {
+            "sort": [
+              {
+                "ub_dev": {
+                  "order": "desc"
+                }
+              }
+            ],
+            "size": 1,
+            "_source": {
+              "includes": [
+                "datetime",
+                "ub_dev"
+              ]
+            }
+          }
+        },
+        "ub_dev_min": {
+          "top_hits": {
+            "sort": [
+              {
+                "ub_dev": {
+                  "order": "asc"
+                }
+              }
+            ],
+            "size": 1,
+            "_source": {
+              "includes": [
+                "datetime",
+                "ub_dev"
+              ]
+            }
+          }
+        },
+        "ub_dev_mean": {
+          "avg": {
+            "field": "ub_dev"
+          }
+        },
+        "uc_dev_max": {
+          "top_hits": {
+            "sort": [
+              {
+                "uc_dev": {
+                  "order": "desc"
+                }
+              }
+            ],
+            "size": 1,
+            "_source": {
+              "includes": [
+                "datetime",
+                "uc_dev"
+              ]
+            }
+          }
+        },
+        "uc_dev_min": {
+          "top_hits": {
+            "sort": [
+              {
+                "uc_dev": {
+                  "order": "asc"
+                }
+              }
+            ],
+            "size": 1,
+            "_source": {
+              "includes": [
+                "datetime",
+                "uc_dev"
+              ]
+            }
+          }
+        },
+        "uc_dev_mean": {
+          "avg": {
+            "field": "uc_dev"
+          }
+        },
+        "uab_dev_max": {
+          "top_hits": {
+            "sort": [
+              {
+                "uab_dev": {
+                  "order": "desc"
+                }
+              }
+            ],
+            "size": 1,
+            "_source": {
+              "includes": [
+                "datetime",
+                "uab_dev"
+              ]
+            }
+          }
+        },
+        "uab_dev_min": {
+          "top_hits": {
+            "sort": [
+              {
+                "uab_dev": {
+                  "order": "asc"
+                }
+              }
+            ],
+            "size": 1,
+            "_source": {
+              "includes": [
+                "datetime",
+                "uab_dev"
+              ]
+            }
+          }
+        },
+        "uab_dev_mean": {
+          "avg": {
+            "field": "uab_dev"
+          }
+        },
+        "ucb_dev_max": {
+          "top_hits": {
+            "sort": [
+              {
+                "ucb_dev": {
+                  "order": "desc"
+                }
+              }
+            ],
+            "size": 1,
+            "_source": {
+              "includes": [
+                "datetime",
+                "ucb_dev"
+              ]
+            }
+          }
+        },
+        "ucb_dev_min": {
+          "top_hits": {
+            "sort": [
+              {
+                "ucb_dev": {
+                  "order": "asc"
+                }
+              }
+            ],
+            "size": 1,
+            "_source": {
+              "includes": [
+                "datetime",
+                "ucb_dev"
+              ]
+            }
+          }
+        },
+        "ucb_dev_mean": {
+          "avg": {
+            "field": "ucb_dev"
+          }
+        },
+        "freq_dev_max": {
+          "top_hits": {
+            "sort": [
+              {
+                "freq_dev": {
+                  "order": "desc"
+                }
+              }
+            ],
+            "size": 1,
+            "_source": {
+              "includes": [
+                "datetime",
+                "freq_dev"
+              ]
+            }
+          }
+        },
+        "freq_dev_min": {
+          "top_hits": {
+            "sort": [
+              {
+                "freq_dev": {
+                  "order": "asc"
+                }
+              }
+            ],
+            "size": 1,
+            "_source": {
+              "includes": [
+                "datetime",
+                "freq_dev"
+              ]
+            }
+          }
+        },
+        "freq_dev_mean": {
+          "avg": {
+            "field": "freq_dev"
+          }
+        }
+      }
+    }
+  }
+}
