@@ -1,3 +1,120 @@
+GET /_settings
+GET /_cat/allocation?v&pretty
+GET /_cat/indices?v
+GET /_cat/indices?v&s=store.size:desc
+
+
+GET /_cat/indices
+GET /test_hhh/_mapping
+DELETE /poweriot_point_1min_index_2021_2
+
+PUT _settings
+{
+  "index": {
+    "blocks": {
+      "read_only_allow_delete": "false"
+    }
+  }
+}
+
+
+POST poweriot_point_1min_index_2021_11/doc/_delete_by_query
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "terms": {
+            "cid": [
+              126,
+              127,
+              129,
+              130,
+              133,
+              138,
+              139
+            ]
+          }
+        },
+        {
+          "range": {
+            "datetime": {
+              "lt": "2021-11-16T00:00:00+08:00"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+POST poweriot_point_1min_event/doc/_delete_by_query
+{
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "term": {
+            "point_id": 216
+          }
+        }
+      ]
+    }
+  }
+}
+
+GET poweriot_point_1min_event/_search
+{
+  "size": 0,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "type.keyword": {
+              "value": "power_quality_low"
+            }
+          }
+        },
+        {
+          "term": {
+            "cid": {
+              "value": 172
+            }
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "NAME": {
+      "terms": {
+        "field": "point_id",
+        "size": 1000
+      },
+      "aggs": {
+        "total_events": {
+          "sum": {
+            "field": "event_duration"
+          }
+        },
+        "ev_sort": {
+          "bucket_sort": {
+            "sort": [
+              {
+                "total_events": {
+                  "order": "desc"
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}
+
+
 根据location_id和time范围，查询location_15min_aiao
 GET /poweriot_location_15min_aiao/_search
 {
@@ -415,8 +532,7 @@ GET /poweriot_point_15min_power/_search?
   ]
 }
 
-GET /_cat/indices
-GET /test_hhh/_mapping
+
 
 GET /poweriot_point_15min_power/_search
 {
@@ -553,22 +669,9 @@ GET /poweriot_point_15min_power/_search
   }
 }
 
-POST poweriot_point_1min_event/doc/_delete_by_query
-{
-  "query": {
-    "bool": {
-      "filter": [
-        {
-          "term": {
-            "point_id": 216
-          }
-        }
-      ]
-    }
-  }
-}
 
-w
+
+
 {
   "query": {
     "bool": {
@@ -693,17 +796,9 @@ POST /poweriot_point_15min_index_v2/doc/676-20201120_1530/_update?pretty
 }
 
 
-GET /_settings
-GET /_cat/allocation?v&pretty
 
-PUT _settings
-{
-  "index": {
-    "blocks": {
-      "read_only_allow_delete": "false"
-    }
-  }
-}
+
+
 
 GET /poweriot_point_15min_index/_search
 {
@@ -1128,6 +1223,247 @@ GET /poweriot_point_1min_index/_search
         "freq_dev_mean": {
           "avg": {
             "field": "freq_dev"
+          }
+        }
+      }
+    }
+  }
+}
+
+{
+  "size": 0,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "terms": {
+            "cid": [
+              141,
+              145,
+              146,
+              149
+            ]
+          }
+        },
+        {
+          "range": {
+            "datetime": {
+              "gte": "2020-10-01T00:00:00+08:00",
+              "lt": "2021-02-01T00:00:00+08:00",
+              "time_zone": "+08:00"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "group_by_type": {
+      "terms": {
+        "field": "type.keyword",
+        "size": 100
+      },
+      "aggs": {
+        "NAME": {
+          "date_histogram": {
+            "field": "datetime",
+            "interval": "month",
+            "time_zone": "+08:00",
+            "format": "yyyy-MM"
+          }
+        }
+      }
+    }
+  }
+}
+
+
+GET /poweriot_point_1min_event/_search
+{
+  "size": 0,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "terms": {
+            "cid": [
+              141,
+              145,
+              146,
+              149
+            ]
+          }
+        },
+        {
+          "range": {
+            "datetime": {
+              "gte": "2020-11-01T00:00:00+08:00",
+              "lt": "2021-02-01T00:00:00+08:00",
+              "time_zone": "+08:00"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "group_by_cid": {
+      "terms": {
+        "field": "cid",
+        "size": 100
+      },
+      "aggs": {
+        "NAME": {
+          "date_histogram": {
+            "field": "datetime",
+            "interval": "month",
+            "time_zone": "+08:00",
+            "format": "yyyy-MM"
+          },
+          "aggs": {
+            "NAME": {
+              "terms": {
+                "field": "type.keyword",
+                "size": 100
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
+POST /poweriot_point_1min_event/doc/_update_by_query
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "type.keyword": {
+              "value": "ele_car_battery"
+            }
+          }
+        },
+        {
+          "term": {
+            "point_id": {
+              "value": 245
+            }
+          }
+        }
+      ]
+    }
+  },
+  "script": {
+    "source": "ctx._source['type']='illegal_ele_app';"
+  }
+}
+POST /poweriot_point_1min_event/doc/_update_by_query
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "type.keyword": {
+              "value": "ele_overload"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "script": {
+    "source": "ctx._source['importance']=2;"
+  }
+}
+
+GET /poweriot_point_1min_event/_search
+{
+  "size": 0,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "terms": {
+            "appliance.keyword": [
+              "电动车电池",
+              "电烙铁"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "group_by_cid": {
+      "terms": {
+        "field": "cid",
+        "size": 100
+      },
+      "aggs": {
+        "NAME": {
+          "date_histogram": {
+            "field": "datetime",
+            "interval": "month",
+            "time_zone": "+08:00",
+            "format": "yyyy-MM"
+          },
+          "aggs": {
+            "group_by_point": {
+              "terms": {
+                "field": "point_id",
+                "size": 1000
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
+GET /poweriot_point_1min_event/_search
+{
+  "size": 0,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "terms": {
+            "appliance.keyword": [
+              "电动车电池",
+              "电烙铁"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "NAME": {
+      "date_histogram": {
+        "field": "datetime",
+        "interval": "month",
+        "time_zone": "+08:00"
+      },
+      "aggs": {
+        "NAME": {
+          "terms": {
+            "field": "cid",
+            "size": 1000
+          },
+          "aggs": {
+            "NAME": {
+              "terms": {
+                "field": "point_id",
+                "size": 1000
+              }
+            }
           }
         }
       }

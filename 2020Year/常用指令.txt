@@ -1,4 +1,7 @@
 常用指令
+
+/Users/apple/code/power_iot_pro/power_iot/pot_utils/system_config
+
 1. workon  查看虚拟环境：workon xxx 进入虚拟环境、pip list查看第三方库
 
 2.Linux查看服务安装目录：which samba
@@ -26,9 +29,16 @@ source /usr/local/bin/virtualenvwrapper.sh
 # 从本地拷贝文件到远程
 scp 1398.tar.gz prod_cold_store:/home/ubuntu/data
 
-# 从远程拷贝文件夹到本地
+# 从远程拷贝文件夹到本地：
+需在本地机器执行
 scp -r ubuntu@172.18.1.32:/home/ubuntu/richard/his_data/daily/1398/ /home/ubuntu/projects/data/
 scp -r ubuntu@172.18.1.9:/etc/supervisor/ /home/ubuntu/projects/data/
+
+scp -r ubuntu@172.18.1.10:/home/ubuntu/data/code/log/appliance/ /Users/apple/Desktop
+
+# 在本地机器，拷贝远程服务器文件至本地（注意远程目录的权限）
+.ssh scp -r -i kp-q81vsdxs_product_jingyp ubuntu@172.16.0.43:/home/ubuntu/output/his_ecb_stats_data /Users/apple/Desktop
+
 
 # 解压文件至指定文件夹
 tar -zxvf 1398.tar.gz  -C /home/ubuntu/richard/his_data/daily/
@@ -38,21 +48,13 @@ export POT_SYSTEM_CONFIG_PATH=/home/ubuntu/projects/power_iot/pot_utils/system_c
 # Linux有两种方式：
 1. command & ： 后台运行，你关掉终端会停止运行
 2. nohup command & ： 后台运行，你关掉终端也会继续运行
-nohup python complete_point_data.py >/dev/null 2>&1 &
 nohup python complete_point_data.py 78
-nohup python complete_point_data.py 78 >/dev/null 2>&1 &
+nohup python complete_point_data.py 78 2>&1 &
 
-nohup python re_create_es.py >/dev/null 2>&1 &
-
-nohup python cold_es_mgr.py >/dev/null 2>&1 &
+nohup python -u complete_point_data.py 78 2>&1 &
 
 nohup python cold_es_adio_mgr.py >/dev/null 2>&1 &
-nohup python cold_es_electric_mgr.py >/dev/null 2>&1 &
-nohup python cold_es_soe_mgr.py >/dev/null 2>&1 &
-nohup python cold_es_scope_mgr.py >/dev/null 2>&1 &
-nohup python scope_get_all_config.py >/dev/null 2>&1 &
 
-nohup python complete_point_data.py 82-107  &
 
 vim nohup.out
 rm nohup.out
@@ -64,7 +66,6 @@ ssh-add
 
 git reset --soft HEAD^
 
-git reset HEAD	丢掉所有修改(包括冲突)
 
 git spush origin master
 
@@ -72,6 +73,27 @@ cold_store项目合并分支至主干操作步骤：①.在develop分支执行�
 
 
 git rebase --continue
+
+Git丢弃本地修改三种情况：
+1.还未将变更从工作区加入到暂存区，即未执行git add 命令前，此时可以使用git checkout命令来撤销修改：
+	git checkout -- rainbow.txt start.txt
+	git checkout -- *
+	git checkout -- *.txt
+2.已将变更加入到暂存区，即已经执行了git add命令，此时可以使用git reset命令来撤销修改
+	git reset HEAD rainbow.txt start.txt
+	git reset HEAD  *
+	git reset HEAD *.txt
+3.已经将代码提交到本地仓库，即已经执行git commit命令，此时工作区已经clean,若想撤销之前的修改，需要执行版本回退操作：
+	#回退到上一个版本：	git reset --hard HEAD^
+	#回退到上上次版本：	git reset --hard HEAD^^		git reset --hard HEAD^^^
+	#回退到指定commitid的版本：	git reset --hard  commit_id
+
+
+git init
+git remote add origin 远端仓库地址
+git add .
+git commit -m “新建项目”
+git push -u origin master
 
 python fetch_qingstor.py A1911000284 soe   2020082809-2020082810
 python fetch_qingstor.py A1911000174 scope 2020091514-2020091516
@@ -92,3 +114,68 @@ tiup cluster deploy zzh v4.0.6 ./topo.yaml --user root -p
 
 
 vim快捷键：shift+g,调至末尾
+
+PIC_SAVE_DIR = r'/home/ubuntu/output/report/pics/'
+DOC_SAVE_DIR = r'/home/ubuntu/output/report/docs/'
+
+PIC_SAVE_DIR = r'/Users/apple/Desktop/report/output/report/pics/'
+DOC_SAVE_DIR = r'/Users/apple/Desktop/report/output/report/docs/'
+
+/Users/apple/code/power_iot/pot_utils/system_config/
+
+
+ssh -vvv dev_cs
+
+查看当前系统用户：cat /etc/passwd
+从root切换到tidb：su - tidb
+从tidb切换到root：sudo -su root
+修改文件所属用户和组：
+    chown [-R] 账号名称 文件或目录
+    chown [-R] 账号名称:用户组名称 文件或目录
+    chown tidb:tidb authorized_keys
+
+sudo scp 架构版本兼容测试.xlsx ubuntu@172.18.1.9:/home/ubuntu/
+
+
+centos安装命令：yum install wget
+
+export PYTHONPATH=/home/ubuntu/data/code/mqtt_storage/tests:/home/ubuntu/data/code/mqtt_storage/src
+
+Vim命令：
+ggdG
+
+
+TDengine数据导出、导入：不要指定用户名、密码
+taosdump -o /backup/log -D db_log  -t 500 -B 40 -T 2
+taosdump -i /dump/adio  -T 2
+
+du -h /backup
+
+查看磁盘分区信息：lsblk -f		磁盘大小、挂载信息：df -h
+挂载磁盘：mount /dev/vdd /dump
+
+已经安装了td服务器，不需要再安装客户端TDengine-client-2.2.2.0-Linux-x64.tar.gz
+There are already installed TDengine server, so don't need install client!
+
+
+service sshd restart	systemctl restart sshd.service
+
+
+
+
+supervisor:
+安装方式：普通用户sudo apt-get install supervisor
+ps aux | grep supervisor
+如果supervisor进程用户名是root，则需要修改supervisor服务为指定的User、Group:
+sudo vim /usr/lib/systemd/system/supervisor.service
+[Service]
+User=qkup
+Group=qkup
+ExecStart=/usr/bin/supervisord -n -c /etc/supervisor/supervisord.conf
+ExecStop=/usr/bin/supervisorctl $OPTIONS shutdown
+ExecReload=/usr/bin/supervisorctl -c /etc/supervisor/supervisord.conf $OPTIONS reload
+KillMode=process
+Restart=on-failure
+RestartSec=50s
+日志目录：cat /var/log/supervisor/supervisord.log
+
