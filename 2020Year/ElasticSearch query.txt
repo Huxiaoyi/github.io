@@ -4,6 +4,33 @@ GET /_cat/indices?v
 GET /_cat/indices?v&s=store.size:desc
 
 
+
+PUT /poweriot_point_1min_index_2021_12/_settings
+{
+  "index.routing.allocation.require.data": "hot"
+}
+
+
+PUT /poweriot_point_1min_index_2021_12/_settings
+{
+  "index.routing.allocation.require.data": "cold"
+}
+
+GET /poweriot_point_1min_index_2021_12/_settings
+
+GET /_cat/shards
+
+GET /_settings
+
+GET /_cat/allocation?v&pretty
+
+GET /_cat/indices?v
+
+GET /_cat/indices?v&s=store.size:desc
+
+DELETE /poweriot_point_1min_index_2021_7
+
+
 GET /_cat/indices
 GET /test_hhh/_mapping
 DELETE /poweriot_point_1min_index_2021_2
@@ -1465,6 +1492,106 @@ GET /poweriot_point_1min_event/_search
               }
             }
           }
+        }
+      }
+    }
+  }
+}
+
+
+GET /poweriot_point_1min_scope/_search
+{
+  "size": 0, 
+  "aggs": {
+    "word_cnt terms": {
+      "terms": {
+        "field": "scope_g.keyword",
+        "size": 10
+      }
+    }
+  }
+}
+
+{
+  "took" : 65,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 5,
+    "successful" : 5,
+    "skipped" : 0,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : 4434773,
+    "max_score" : 0.0,
+    "hits" : [ ]
+  },
+  "aggregations" : {
+    "word_cnt terms" : {
+      "doc_count_error_upper_bound" : 0,
+      "sum_other_doc_count" : 0,
+      "buckets" : [
+        {
+          "key" : "200ms",
+          "doc_count" : 744863
+        },
+        {
+          "key" : "2s",
+          "doc_count" : 473281
+        },
+        {
+          "key" : "",
+          "doc_count" : 317872
+        },
+        {
+          "key" : "0.25ms",
+          "doc_count" : 131525
+        }
+      ]
+    }
+  }
+}
+
+
+GET /poweriot_point_1min_event/_search
+{
+  "size": 0, 
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "terms": {
+            "type.keyword": [
+              "power_quality_low",
+              "high_power_app",
+              "underU",
+              "overU",
+              "overTHDU",
+              "overResidualCurrent",
+              "illegal_ele_app",
+              "unbalanceU",
+              "unbalanceI",
+              "ele_overload",
+              "underTotalPF",
+              "underPhasePF",
+              "overTemp",
+              "overI",
+              "overPR",
+              "overTHDI"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "NAME": {
+      "date_histogram": {
+        "field": "datetime",
+        "interval": "day",
+        "time_zone": "+08:00",
+        "order": {
+          "_count": "desc"
         }
       }
     }

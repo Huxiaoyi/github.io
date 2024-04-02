@@ -17,6 +17,9 @@ ln -s /usr/local/python3/bin/pip3.8 /usr/bin/pip3
 
 path_env = "D:/projects/unify_api/unify_api/settings.yaml"
 
+virtualenv venv --python=python3.6
+
+
 openvpn启动：
 ①.sudo openvpn --config /home/ubuntu/openvpn-client/rtr-test.ovpn --auth-user-pass /home/ubuntu/openvpn-client/pass.txt
 ②.sudo openvpn --config /home/ubuntu/openvpn-client/rtr-test.ovpn --auth-user-pass /home/ubuntu/openvpn-client/pass.txt&
@@ -28,7 +31,7 @@ source /usr/local/bin/virtualenvwrapper.sh
 
 # 从本地拷贝文件到远程
 scp 1398.tar.gz prod_cold_store:/home/ubuntu/data
-
+➜  Downloads scp TDengine-server-2.2.2.0-Linux-aarch64.tar.gz ubuntu@139.9.82.248:/home/ubuntu/software
 # 从远程拷贝文件夹到本地：
 需在本地机器执行
 scp -r ubuntu@172.18.1.32:/home/ubuntu/richard/his_data/daily/1398/ /home/ubuntu/projects/data/
@@ -37,7 +40,7 @@ scp -r ubuntu@172.18.1.9:/etc/supervisor/ /home/ubuntu/projects/data/
 scp -r ubuntu@172.18.1.10:/home/ubuntu/data/code/log/appliance/ /Users/apple/Desktop
 
 # 在本地机器，拷贝远程服务器文件至本地（注意远程目录的权限）
-.ssh scp -r -i kp-q81vsdxs_product_jingyp ubuntu@172.16.0.43:/home/ubuntu/output/his_ecb_stats_data /Users/apple/Desktop
+➜.ssh scp -r -i kp-q81vsdxs_product_jingyp ubuntu@172.16.0.43:/home/ubuntu/output/his_ecb_stats_data /Users/apple/Desktop
 
 
 # 解压文件至指定文件夹
@@ -94,6 +97,28 @@ git remote add origin 远端仓库地址
 git add .
 git commit -m “新建项目”
 git push -u origin master
+
+git config --global alias.plog "log --oneline --decorate"
+git config --global status.submoduleSummary true
+git config --global diff.submodule log
+git config --global alias.spull '!__git_spull() { git pull "$@" && git submodule sync --recursive && git submodule update --init --recursive; }; __git_spull'
+git config --global alias.spush 'push --recurse-submodules=on-demand'
+
+
+git config user.name "hu.jiayi"
+git config user.email "495225893@qq.com"
+
+git config --global  --list
+git config --global user.name "hu.jiayi"
+git config --global user.email "495225893@qq.com"
+
+
+ssh-keygen -t rsa
+ssh-keygen -t rsa -C "495225893@qq.com"
+
+
+git fetch origin v4.3.10:v4.3.10
+git checkout v4.3.10
 
 python fetch_qingstor.py A1911000284 soe   2020082809-2020082810
 python fetch_qingstor.py A1911000174 scope 2020091514-2020091516
@@ -160,7 +185,7 @@ There are already installed TDengine server, so don't need install client!
 
 service sshd restart	systemctl restart sshd.service
 
-
+systemctl daemon-reload
 
 
 supervisor:
@@ -179,3 +204,125 @@ Restart=on-failure
 RestartSec=50s
 日志目录：cat /var/log/supervisor/supervisord.log
 
+
+修改主机名（终端显示）root用户：vim /etc/hostname 填入主机名，重启服务器即可
+
+
+Copy本机公钥至远程服务器某用户下：ssh-copy-id -i ~/.ssh/id_rsa.pub tidb@139.159.234.186
+
+每次创建新目录都显示信息，eg：mkdir /etc/redis/{7001,7002} -pv
+[root@Kafka-1-ecs-7daa-0003 bin]# mkdir /etc/redis/{7001,7002} -pv
+mkdir: 已创建目录 "/etc/redis"
+mkdir: 已创建目录 "/etc/redis/7001"
+mkdir: 已创建目录 "/etc/redis/7002"
+
+systemctl disable chronyd
+
+系统开机启动服务，以redis为例：
+查询是否开机启动：systemctl list-unit-files | grep redis
+允许开机启动sudo  redis
+
+ps aux | grep redis
+systemctl daemon-reload
+systemctl start redis
+systemctl stop redis
+systemctl status redis7003.service
+
+redis-cli -c -p 7001 -h 116.205.138.59
+
+/etc/systemd/system/tikv-20160.service
+
+ss -n | grep ESTAB | wc -l
+
+uname -a	cat /proc/version	lsb_release -a	cat /etc/redhat-release		
+
+
+ssh-keygen -t rsa
+git config --global user.name "hu.jiayi"
+git config --global user.email "495225893@qq.com"
+
+sudo systemctl status taosd
+sudo systemctl start taosd
+sudo systemctl stop taosd
+
+
+sudo adduser ubuntu
+pip install -r requirements.txt
+
+
+Ubuntu	NTP服务
+sudo apt-get update
+sudo apt-get install nntp
+sudo systemctl status ntp.service	sudo systemctl enable ntp.service
+
+sudo apt-get update 	sudo apt-get install openjdk-8-jdk
+
+sudo apt-get install supervisor
+
+
+➜  ~ which java
+/usr/bin/java
+➜  ~ ls -lrt /usr/bin/java
+lrwxrwxrwx 1 root root 22 Aug 15 14:43 /usr/bin/java -> /etc/alternatives/java
+➜  ~ ls -lrt /etc/alternatives/java
+lrwxrwxrwx 1 root root 46 Aug 15 14:43 /etc/alternatives/java -> /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
+
+apt install sysv-rc-conf
+sysv-rc-conf --list
+
+ls -ll、ls-lh命令进行查看，当使用ls -ll，会显示成字节大小，而ls -lh会以KB、MB
+du -sh	du -sh *
+rm -f tidb_slow_query-*.log
+
+创建新用户
+sudo useradd username -m    注意要在后面加-m，否则不会在home路径下创建该用户的文件夹
+sudo userdel -r username    加上-r可以删除/home/路径下的用户文件夹，否则不能
+
+ 
+groupadd -r qkup
+useradd -m -r -g qkup qkup
+
+visudo	tidb ALL=(ALL) NOPASSWD: ALL
+Ctrl+O	Ctrl+X
+
+vi /etc/ssh/sshd_config	
+
+service sshd restart    systemctl restart sshd.service   ssh-keygen -t rsa  chmod 644 authorized_keys
+
+yum -y install zsh	yum -y install git
+
+chsh -s /bin/zsh	mkdir plugins	git clone https://github.com/robbyrussell/oh-my-zsh 	sh install.sh
+
+
+hostname -I	ip addr	ip a
+
+
+ln -s /seafile/seafile-data /opt/seafile 		unlink link_name
+
+
+print(config_file)
+config_file = "/Users/apple/code/mqtt_storage/src/pot_utils/system_config/system.conf"
+
+config_file = "/Users/apple/code/power_iot/pot_utils/system_config/system.conf"
+
+
+ps aux | sort -k4,4nr | head -n 20
+
+
+SSL证书生成流程
+1. acme.sh --issue -d www.qkvpp.soejh.com --dns dns_ali
+2. acme.sh --installcert -d www.qkvpp.soejh.com \
+--keypath       /home/ubuntu/www/ssl/www.qkvpp.soejh.com.key  \
+--fullchainpath /home/ubuntu/www/ssl/www.qkvpp.soejh.com.key.pem
+
+3. openssl dhparam -out /home/ubuntu/www/ssl/dhparam_qkvpp.soejh.pem 2048
+4 cp /home/ubuntu/www/ssl/www.qkvpp.soejh.com.key.pem /home/ubuntu/.acme.sh/www.qkvpp.soejh.com/
+5. sudo service nginx force-reload
+
+
+
+curl -iv -H "Content-Type: application/json" -d '{"username": "user1", "password": "abcxyz"}' http://localhost:8091/unify-api/auth
+
+curl -iv -H "Content-Type: application/json" -d '{"phone": "100535", "password": "baiyi666", "client_name": "script", "host": "uplus", "product": 4}' http://localhost:8091/unify-api/auth
+curl -iv -H "Content-Type: application/json" -d '{"phone": "100535", "password": "baiyi666", "client_name": "script", "host": "uplus", "product": 4}' http://localhost:8091/hzz/auth
+curl -iv http://www.nkvpp.com:30211/openapi/api/v1/token\?appid\=hx123456\&secret\=4c654ec578656f723d9a046f116c5a9d
